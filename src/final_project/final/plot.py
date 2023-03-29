@@ -1,56 +1,134 @@
 """Functions plotting results."""
 
-import plotly.express as px
-import plotly.graph_objects as go
+import matplotlib.pyplot as plt
+from psmpy.plotting import *
 
 
-def plot_regression_by_age(data, data_info, predictions, group):
-    """Plot regression results by age.
+def plot_match(psm, title, ylabel, xlabel, names):
+    psm.plot_match(Title=title, Ylabel=ylabel, Xlabel=xlabel, names=names)
 
-    Args:
-        data (pandas.DataFrame): The data set.
-        data_info (dict): Information on data set stored in data_info.yaml. The
-            following keys can be accessed:
-            - 'outcome': Name of dependent variable column in data
-            - 'outcome_numerical': Name to be given to the numerical version of outcome
-            - 'columns_to_drop': Names of columns that are dropped in data cleaning step
-            - 'categorical_columns': Names of columns that are converted to categorical
-            - 'column_rename_mapping': Old and new names of columns to be renamend,
-                stored in a dictionary with design: {'old_name': 'new_name'}
-            - 'url': URL to data set
-        predictions (pandas.DataFrame): Model predictions for different age values.
-        group (str): Categorical column in data set. We create predictions for each
-            unique value in column data[group]. Cannot be 'age' or 'smoke'.
 
-    Returns:
-        plotly.graph_objects.Figure: The figure.
+def plot_effect_size(psm):
+    return psm.effect_size_plot()
 
-    """
-    plot_data = predictions.melt(
-        id_vars="age",
-        value_vars=predictions.columns,
-        value_name="prediction",
-        var_name=group,
+
+def effect_size_table(psm):
+    return psm.effect_size
+
+
+def plot_loneliness_by_employment(data):
+    # Subset the data for people who went unemployed and those who did not
+    unemployed_means = [
+        data[data["went_unemployed"] == 1]["aggregate_loneliness_2013"].mean(),
+        data[data["went_unemployed"] == 1]["aggregate_loneliness_2017"].mean(),
+    ]
+    not_unemployed_means = [
+        data[data["went_unemployed"] == 0]["aggregate_loneliness_2013"].mean(),
+        data[data["went_unemployed"] == 0]["aggregate_loneliness_2017"].mean(),
+    ]
+
+    # Create a line plot to compare the mean loneliness levels for each group in both years
+    x = [2013, 2017]
+
+    # Figure and axis
+    fig, ax = plt.subplots()
+
+    # Lines
+    (line1,) = ax.plot(x, unemployed_means, label="Went Unemployed", marker="o")
+    (line2,) = ax.plot(x, not_unemployed_means, label="Stayed employed", marker="o")
+
+    # Add some labels and title
+    ax.set_ylabel("Mean Loneliness Level")
+    ax.set_title("Loneliness Levels by Employment Status")
+    ax.set_xticks(x)
+    ax.legend()
+
+    ax.grid()
+    return fig
+
+
+def plot_loneliness_by_gender_and_employment(data):
+    # Data for men
+    men_unemployed_means = [
+        data.loc[
+            (data["went_unemployed"] == 1) & (data["sex"] == 1),
+            "aggregate_loneliness_2013",
+        ].mean(),
+        data.loc[
+            (data["went_unemployed"] == 1) & (data["sex"] == 1),
+            "aggregate_loneliness_2017",
+        ].mean(),
+    ]
+    men_not_unemployed_means = [
+        data.loc[
+            (data["went_unemployed"] == 0) & (data["sex"] == 1),
+            "aggregate_loneliness_2013",
+        ].mean(),
+        data.loc[
+            (data["went_unemployed"] == 0) & (data["sex"] == 1),
+            "aggregate_loneliness_2017",
+        ].mean(),
+    ]
+
+    # Data for women
+    women_unemployed_means = [
+        data.loc[
+            (data["went_unemployed"] == 1) & (data["sex"] == 0),
+            "aggregate_loneliness_2013",
+        ].mean(),
+        data.loc[
+            (data["went_unemployed"] == 1) & (data["sex"] == 0),
+            "aggregate_loneliness_2017",
+        ].mean(),
+    ]
+    women_not_unemployed_means = [
+        data.loc[
+            (data["went_unemployed"] == 0) & (data["sex"] == 0),
+            "aggregate_loneliness_2013",
+        ].mean(),
+        data.loc[
+            (data["went_unemployed"] == 0) & (data["sex"] == 0),
+            "aggregate_loneliness_2017",
+        ].mean(),
+    ]
+
+    # Plotting the data
+    labels = ["2013", "2017"]
+    x = np.arange(len(labels))
+    width = 0.35
+
+    fig, ax = plt.subplots()
+    ax.bar(
+        x - width / 2,
+        men_unemployed_means,
+        width / 2,
+        label="Men: Went Unemployed",
+    )
+    ax.bar(
+        x - width / 4,
+        men_not_unemployed_means,
+        width / 2,
+        label="Men: Stayed employed",
+    )
+    ax.bar(
+        x + width / 4,
+        women_unemployed_means,
+        width / 2,
+        label="Women: Went Unemployed",
+    )
+    ax.bar(
+        x + width / 2,
+        women_not_unemployed_means,
+        width / 2,
+        label="Women: Stayed employed",
     )
 
-    outcomes = data[data_info["outcome_numerical"]]
+    # Adding some labels and title
+    ax.set_ylabel("Loneliness")
+    ax.set_xticks(x)
+    ax.set_xticklabels(labels)
+    ax.set_title("Loneliness by employment status and gender")
 
-    fig = px.line(
-        plot_data,
-        x="age",
-        y="prediction",
-        color=group,
-        labels={"age": "Age", "prediction": "Probability of Smoking"},
-    )
-
-    fig.add_traces(
-        go.Scatter(
-            x=data["age"],
-            y=outcomes,
-            mode="markers",
-            marker_color="black",
-            marker_opacity=0.1,
-            name="Data",
-        ),
-    )
+    # Remove legend from the bar chart
+    ax.legend(loc="upper center", bbox_to_anchor=(0.5, -0.15), ncol=4)
     return fig

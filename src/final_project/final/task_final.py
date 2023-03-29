@@ -1,41 +1,118 @@
 """Tasks running the results formatting (tables, figures)."""
-
 import pandas as pd
 import pytask
+from psmpy.plotting import *
 
-from final_project.analysis.model import load_model
-from final_project.config import BLD, GROUPS, SRC
-from final_project.final import plot_regression_by_age
-from final_project.utilities import read_yaml
+from final_project.analysis.model import create_psm, drop_na, run_logistic_ps
+from final_project.analysis.predict import get_predicted_data, run_knn_matched
+from final_project.config import BLD
+from final_project.final.plot import (
+    effect_size_table,
+    plot_effect_size,
+    plot_loneliness_by_employment,
+    plot_loneliness_by_gender_and_employment,
+    plot_match,
+)
 
-for group in GROUPS:
-    kwargs = {
-        "group": group,
-        "depends_on": {"predictions": BLD / "python" / "predictions" / f"{group}.csv"},
-        "produces": BLD / "python" / "figures" / f"smoking_by_{group}.png",
-    }
 
-    @pytask.mark.depends_on(
-        {
-            "data_info": SRC / "data_management" / "data_info.yaml",
-            "data": BLD / "python" / "data" / "data_clean.csv",
-        },
+@pytask.mark.depends_on(
+    {
+        "data": BLD / "python" / "data" / "data_clean.csv",
+    },
+)
+@pytask.mark.produces(BLD / "python" / "figures" / "matching.png")
+def task_plot_results(depends_on, produces):
+    """Plot the regression results by age (Python version)."""
+    data = pd.read_csv(depends_on["data"])
+    data = drop_na(data)
+    psm = create_psm(
+        data,
+        treatment="went_unemployed",
+        indx="pid",
+        exclude=["hid", "aggregate_loneliness_2017"],
     )
-    @pytask.mark.task(id=group, kwargs=kwargs)
-    def task_plot_results_by_age_python(depends_on, group, produces):
-        """Plot the regression results by age (Python version)."""
-        data_info = read_yaml(depends_on["data_info"])
-        data = pd.read_csv(depends_on["data"])
-        predictions = pd.read_csv(depends_on["predictions"])
-        fig = plot_regression_by_age(data, data_info, predictions, group)
-        fig.write_image(produces)
+    run_logistic_ps(psm, balance=False)
+    get_predicted_data(psm)
+    run_knn_matched(psm, matcher="propensity_score", replacement=False, caliper=None)
+    plot_match(
+        psm,
+        title="Matching Result",
+        ylabel="# of obs",
+        xlabel="propensity logit",
+        names=["treatment", "control"],
+    )
+    plt.savefig(produces)
 
 
-@pytask.mark.depends_on(BLD / "python" / "models" / "model.pickle")
-@pytask.mark.produces(BLD / "python" / "tables" / "estimation_results.tex")
-def task_create_results_table_python(depends_on, produces):
-    """Store a table in LaTeX format with the estimation results (Python version)."""
-    model = load_model(depends_on)
-    table = model.summary().as_latex()
+@pytask.mark.depends_on(
+    {
+        "data": BLD / "python" / "data" / "data_clean.csv",
+    },
+)
+@pytask.mark.produces(BLD / "python" / "figures" / "effect_size.png")
+def task_plot_results1(depends_on, produces):
+    """Plot the regression results by age (Python version)."""
+    data = pd.read_csv(depends_on["data"])
+    data = drop_na(data)
+    psm = create_psm(
+        data,
+        treatment="went_unemployed",
+        indx="pid",
+        exclude=["hid", "aggregate_loneliness_2017"],
+    )
+    run_logistic_ps(psm, balance=False)
+    get_predicted_data(psm)
+    run_knn_matched(psm, matcher="propensity_score", replacement=False, caliper=None)
+    plot_effect_size(psm)
+    plt.savefig(produces)
+
+
+@pytask.mark.depends_on(
+    {
+        "data": BLD / "python" / "data" / "data_clean.csv",
+    },
+)
+@pytask.mark.produces(BLD / "python" / "figures" / "descriptive stats_1.png")
+def task_plot_results2(depends_on, produces):
+    """Plot the regression results by age (Python version)."""
+    data = pd.read_csv(depends_on["data"])
+    fig = plot_loneliness_by_employment(data)
+    fig.savefig(produces)
+
+
+@pytask.mark.depends_on(
+    {
+        "data": BLD / "python" / "data" / "data_clean.csv",
+    },
+)
+@pytask.mark.produces(BLD / "python" / "figures" / "descriptive stats_2.png")
+def task_plot_results3(depends_on, produces):
+    """Plot the regression results by age (Python version)."""
+    data = pd.read_csv(depends_on["data"])
+    fig = plot_loneliness_by_gender_and_employment(data)
+    fig.savefig(produces)
+
+
+@pytask.mark.depends_on(
+    {
+        "data": BLD / "python" / "data" / "data_clean.csv",
+    },
+)
+@pytask.mark.produces(BLD / "python" / "tables" / "estimation_table.tex")
+def task_plot_results4(depends_on, produces):
+    """Plot the regression results by age (Python version)."""
+    data = pd.read_csv(depends_on["data"])
+    data = drop_na(data)
+    psm = create_psm(
+        data,
+        treatment="went_unemployed",
+        indx="pid",
+        exclude=["hid", "aggregate_loneliness_2017"],
+    )
+    run_logistic_ps(psm, balance=False)
+    get_predicted_data(psm)
+    run_knn_matched(psm, matcher="propensity_score", replacement=False, caliper=None)
+    plot_effect_size(psm)
+    table = effect_size_table(psm)
     with open(produces, "w") as f:
-        f.writelines(table)
+        f.write(table.to_latex(index=False))
