@@ -64,8 +64,8 @@
 \author{Purti Sadhwani}
 
 \date{
-    {\bf Preliminary -- please do not quote}
-    \\[1ex]
+    %{\bf Preliminary -- please do not quote}
+    %\\[1ex]
     \today
 }
 
@@ -73,7 +73,7 @@
 
 
 \begin{abstract}
-    Some abstract here.
+    This study investigates the relationship between unemployment and loneliness by utilizing Propensity Score Matching as a method to control for other factors, including past experiences of unemployment. The  paper finds a small yet significant effect of unemployment on loneliness. The study also delves deeper into the relationship by examining differences across regions and gender, and by identifying specific aspects of loneliness. The results could offer valuable insights for policymakers responsible for labor market policies.
 \end{abstract}
 
 \clearpage
@@ -82,26 +82,27 @@
 \section{Introduction} % (fold)
 \label{sec:introduction}
 
-If you are using this template, please cite this item from the references:
-\citet{GaudeckerEconProjectTemplates}.
+This paper examines loneliness and its relationship with unemployment. More specifically, whether unemployment is a causal explanation for feelings of loneliness. The structure is as follows: this section gives an overview of the literature surrounding the consequences and causes of loneliness and motivates why the link with unemployment should be of interest. Section 2 describes the chosen dataset. Section 3.1 explains the issues of causal interpretation when identifying the impact of unemployment and 3.2 outlines the chosen empirical approach. Section 4 presents these results and finally section 5 provides discussion on scope to expand on the results and critiques of our approach.
 
-The data set for the example project is taken from
-\url{https://www.stem.org.uk/resources/elibrary/resource/28452/large-datasets-stats4schools}.
-It contains data on smoking habits in the UK, with 1691 observations and 12 variables.
-We consider only 4 of the 12 features for the prediction of the variable
-\texttt{smoking}: \texttt{marital\_status}, \texttt{highest\_qualification},
-\texttt{gender} and \texttt{age}. We model the dependence using a Logistic model. All
-numerical features are included linearly, while categorical features are expanded into
-dummy variables. Figures below illustrate the model predictions over the lifetime. You
-will find one figure and one estimation summary table for each installed programming
-language.
+Loneliness is defined to be the “discrepancy between a person’s desired and actual social relationships” \citep{masi2011meta}. It is a subjective feeling that reflects perceived social isolation and is an innately emotionally unpleasant experience which everyone is susceptible to. As a social species, humans fundamentally demand the presence of others, and specifically those who value them and can be trusted \citep{cacioppo2008loneliness}. Loneliness, and its associated aversive state is a signal to change behaviour. By experiencing feelings of vulnerability, it forces the formation of social connections necessary to avoid damage and to reproduce. Loneliness is therefore not always a bad thing when transient, but when prolonged it causes problems. Loneliness was previously labelled as a “public health epidemic” \citep{rimmer2018rcgp} and is of increasing concern after the COVID-19 pandemic due to the social distancing regulations \citep{Payne_2021}. Policymakers are becoming more concerned about loneliness and in 2018 Britain appointed a Minister of Loneliness to campaign and raise awareness on its impacts.
 
+\section{Data and Analysis} % (fold)
+\label{sec: Data and Analysis}
 
+SOEP contains several types of questions, which provide us with three different types of variables. Answers to questions about unemployment duration, household income, age and years of education are contained in numerical variables. Categorical variables indicate participants’ gender, whether they live in east Germany or not, and employment status. At last, we have the variables collected from a Likert scale answer, producing ordinal numbers. The questionnaire asks of the degree they would rate their health. It also asks three questions related to the subject of loneliness: how often they feel left alone, socially isolated and that the company of others is missing. All scored in a 1 (Bad / Very often) to 5 (Good / Never) interval. We generate an aggregate loneliness variable, taking the average of all three answers. For the rest of this paper, we emphasise that low levels of the loneliness variable, represents more frequent feelings of loneliness.
+
+As we consider the effect of unemployment on loneliness, we want to obtain a treatment variable representing the exposure of unemployment in the observed period. This is constructed by subtracting the answer of unemployment experience in 2013, from the answer in 2017, obtaining a measure in years. Using this, we assign 1 to every worker with durational unemployment in the period, and 0 to the workers that stayed in the same job. This divides our sample into a treatment group, those who experienced unemployment in 2013 to 2017, and a control group, those who did not.
+
+Our approach in order to isolate the impact of unemployment on loneliness is to use PSM. PSM attempts to emulate randomisation of treatment, by conditioning on selected observable characteristics. Thus, the untreated individuals can be compared to the treated with respect to the control variables.
+
+There are two important assumptions that need to be satisfied, in order for PSM to give a causal interpretation \citep{caliendo2008some}. The first being unconfoundedness, implying that the covariates should be independent of the treatment or the anticipation of the treatment. The second being the overlap condition, which makes sure that there is sufficient overlap between the covariates of the treatment and the control group. Together these conditions secure the strong ignorability treatment assignment, which states that after matching, the treatment variable is independent of the covariates.
+
+In order to use PSM, our empirical process must satisfy the mentioned assumptions. First, the sample is limited to only include those who are employed in 2013. We then estimate the probability of experiencing unemployment between 2013 and 2017 using characteristics that are fixed in 2013. As these are measured before the assignment of the treatment, it requires us to assume that the probability stays constant over time, or changes in the same way for the entire population. We argue that this strong assumption holds as our selected covariates are likely to stay constant for the majority of our sample. We also allow for the unemployment risk to move the same way for the whole sample as government policies and economic cycles should influence everyone equally. The probability estimation utilises a probit model, indicating that the covariates follow a normal distribution.
 
 \begin{figure}[H]
 
     \centering
-    \includegraphics[width=0.85\textwidth]{../python/figures/smoking_by_marital_status}
+    \includegraphics[width=0.85\textwidth]{../bld/python/figures/descriptive stats_1.png}
 
     \caption{\emph{Python:} Model predictions of the smoking probability over the
         lifetime. Each colored line represents a case where marital status is fixed to one
@@ -112,9 +113,9 @@ language.
 
 
 \begin{table}[!h]
-    \input{../python/tables/estimation_results.tex}
-    \caption{\label{tab:python-summary}\emph{Python:} Estimation results of the
-        linear Logistic regression.}
+    \input{../bld/python/tables/estimation_table.tex}
+    \caption{\label{tab:python-summary}\emph{Python:} The Effect Size of
+    Covariates .}
 \end{table}
 
 

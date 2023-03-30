@@ -34,7 +34,7 @@
 
 \begin{document}
 
-\title{Final Project}
+\title{Does unemployment lead to loneliness?}
 
 \author[Purti Sadhwani]
 {
@@ -43,17 +43,68 @@
 }
 
 
-\begin{frame}
-    \titlepage
+\begin{frame}[t]
+    \frametitle{Introduction}
+    \begin{itemize}
+    \item This paper examines loneliness and its relationship with unemployment. More specifically,
+    whether unemployment is a causal explanation for feelings of loneliness. The structure is as
+    follows: this section gives an overview of the literature surrounding the consequences and
+    causes of loneliness and motivates why the link with unemployment should be of interest.
+    Section 2 describes the chosen dataset. Section 3.1 explains the issues of causal interpretation when identifying the impact of unemployment and 3.2 outlines the chosen empirical
+    approach. Section 4 presents these results and finally section 5 provides discussion on scope
+    to expand on the results and critiques of our approach.
+    \end{itemize}
     \note{~}
 \end{frame}
 
+\begin{frame}[t]
+    \frametitle{Data}
+     \begin{itemize}
+           \item SOEP contains several types of questions, which provide us with three different types
+            of variables. Answers to questions about unemployment duration, household income, age
+            and years of education are contained in numerical variables. Categorical variables indicate
+            participants gender, whether they live in east Germany or not, and employment status. At
+            last, we have the variables collected from a Likert scale answer, producing ordinal numbers. The questionnaire asks of the degree they would rate their health. It also asks three
+            questions related to the subject of loneliness: how often they feel left alone, socially isolated
+            and that the company of others is missing. All scored in a 1 (Bad / Very often) to 5 (Good
+            / Never) interval. We generate an aggregate loneliness variable, taking the average of all
+            three answers. For the rest of this paper, we emphasise that low levels of the loneliness
+            variable, represents more frequent feelings of loneliness.
+     \end{itemize}
+    \note{~}
+\end{frame}
 
 \begin{frame}[t]
-    \frametitle{heading here}
+    \frametitle{Empirical Analysis}
+     \begin{itemize}
+          \item Our approach in order to isolate the impact of unemployment on loneliness is to use PSM.
+          \item PSM attempts to emulate randomisation of treatment, by conditioning on selected observable characteristics. Thus, the untreated individuals can be compared to the treated with
+            respect to the control variables.
+            There are two important assumptions that need to be satisfied, in order for PSM to
+            give a causal interpretation. The first being unconfoundedness,
+            implying that the covariates should be independent of the treatment or the anticipation
+            of the treatment. The second being the overlap condition, which makes sure that there is
+            sufficient overlap between the covariates of the treatment and the control group. Together
+            these conditions secure the strong ignorability treatment assignment, which states that
+            after matching, the treatment variable is independent of the covariates.
+            In order to use PSM, our empirical process must satisfy the mentioned assumptions.
+            First, the sample is limited to only include those who are employed in 2013.
+     \end{itemize}
+    \note{~}
+\end{frame}
+
+\begin{frame}[t]
+    \frametitle{Conclusion and Discussion}
     \begin{itemize}
-        \item<+-> Please cite this template as: \citet{GaudeckerEconProjectTemplates}
-        \item<+-> Example data is taken from \url{https://www.stem.org.uk/resources/elibrary/resource/28452/large-datasets-stats4schools}
+        \item Our results show that there is evidence of unemployment affecting loneliness levels, which
+        should be relevant for policy making. We point out two implications of our result. The first
+        being that experiencing unemployment could have a negative impact on loneliness. This
+        could be worsened by the introduction of zero-hour contracts, which could increase the frequency of unemployment in the economy. Secondly, as echoed by the literature, loneliness
+        is an important component in individuals' health. The detrimental effects of unemployment
+        are emphasised and potentially exacerbated by the increasing loneliness levels which can
+        have negative consequences on one's health. This would suggest that policymakers should
+        increase their focus on aiding individuals to avoid unemployment, and during unemployment provide sufficient arenas for social interaction. However, it should be noted that the
+        external validity of the results is limited to only countries with a similar economic outlook.
     \end{itemize}
     \note{~}
 \end{frame}
@@ -64,7 +115,7 @@
     \begin{figure}[H]
 
         \centering
-        \includegraphics[width=0.5\textwidth]{../python/figures/smoking_by_marital_status}
+        \includegraphics[width=0.5\textwidth]{../bld/python/figures/descriptive stats_1.png}
 
         \caption{\emph{Python:} Model predictions of the smoking probability over the
             lifetime. Each colored line represents a case where marital status is fixed to
