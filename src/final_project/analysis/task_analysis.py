@@ -45,7 +45,7 @@ def task_fit_model_python(depends_on, produces):
 
 @pytask.mark.depends_on(
     {
-        "data": BLD / "python" / "data_predictions" / "data_matched.csv",
+        "data": BLD / "python" / "predictions" / "data_matched.csv",
     },
 )
 @pytask.mark.produces(BLD / "python" / "models" / "model.pickle")
@@ -58,7 +58,7 @@ def task_fit_model_python(depends_on, produces):
 
 @pytask.mark.depends_on(
     {
-        "data": BLD / "python" / "data_predictions" / "data_matched.csv",
+        "data": BLD / "python" / "predictions" / "data_matched.csv",
         "model": BLD / "python" / "models" / "model.pickle",
     },
 )
