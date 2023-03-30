@@ -9,6 +9,16 @@ warnings.simplefilter(action="ignore", category=FutureWarning)
 
 
 def filter_by_year(df, year):
+    """Filters a DataFrame by the given year, using the 'syear' column.
+
+    Args:
+        df (pandas.DataFrame): The DataFrame to filter.
+        year (int): The year to filter by.
+
+    Returns:
+        pandas.DataFrame: The filtered DataFrame.
+
+    """
     df = df.copy()
     df.loc[:, "syear"] = pd.to_numeric(df["syear"], errors="coerce")
     df = df.loc[df["syear"] == year]
@@ -16,6 +26,21 @@ def filter_by_year(df, year):
 
 
 def replace_invalid_responses(df, column, data_type):
+    """Replaces invalid or unconsiderable responses in a DataFrame column with NaN values, and converts the data type of the column to the specified data type.
+
+    Args:
+        df (pandas.DataFrame): The DataFrame to modify.
+        column (str): The name of the column to modify.
+        data_type (str): The desired data type of the column. Must be 'int', 'float', or 'category'.
+
+    Returns:
+        pandas.DataFrame: The modified DataFrame.
+
+    Raises:
+        ValueError: If the specified column does not exist in the DataFrame, or if the specified data
+                    type is not 'int', 'float', or 'category'.
+
+    """
     unconsiderable = [
         "[-1] keine Angabe",
         "[-2] trifft nicht zu",
@@ -44,6 +69,20 @@ def replace_invalid_responses(df, column, data_type):
 
 
 def pgen_treatment(df):
+    """Calculates the unemployment duration between 2013-2017 using "pgexpue" variable in the pgen Dataset(input dataframe), and creates a new variable indicating whether the respondent went
+    unemployed during that period which is the treatment variable.
+
+    Args:
+        df (pandas.DataFrame): The DataFrame to modify- pgen Dataset.
+
+    Returns:
+        pandas.DataFrame: A new DataFrame containing the following columns: 'pid', 'went_unemployed',
+                           and 'hid'.
+
+    Raises:
+        ValueError: If the 'pgexpue' column does not exist in the DataFrame.
+
+    """
     df = df.copy()
     df = replace_invalid_responses(df, "pgexpue", "float")
     df_start = filter_by_year(df, 2013)
@@ -55,8 +94,8 @@ def pgen_treatment(df):
         suffixes=("_2013", "_2017"),
         how="left",
     )
-    df_final["pgen_treatment"] = df_final["pgexpue_2017"] - df_final["pgexpue_2013"]
-    df_final["went_unemployed"] = df_final["pgen_treatment"].apply(
+    df_final["unemp_duration"] = df_final["pgexpue_2017"] - df_final["pgexpue_2013"]
+    df_final["went_unemployed"] = df_final["unemp_duration"].apply(
         lambda x: 1 if x >= 1 else 0,
     )
     df_final = df_final[["pid", "went_unemployed", "hid"]]
@@ -66,6 +105,17 @@ def pgen_treatment(df):
 
 
 def ppath_functions(df):
+    """Creates a new DataFrame containing information on the respondents' age, sex, and pid (personal ID),.
+
+    based on the columns - year of birth and sex in the ppath Dataset(input dataframe).
+
+    Args:
+        df (pandas.DataFrame): The DataFrame to modify -ppath Dataset.
+
+    Returns:
+        pandas.DataFrame: A new DataFrame containing the following columns: 'age', 'pid', 'sex'.
+
+    """
     df = df[["pid", "sex", "gebjahr"]]
     df_copy = df.copy()
     df_copy.loc[:, "sex"] = np.where(df_copy["sex"] == "[1] maennlich", 1, 0)
@@ -77,6 +127,17 @@ def ppath_functions(df):
 
 
 def pl_subfunction(df):
+    """Modifies a DataFrame by renaming specific columns and replacing invalid responses in certain columns of pl Dataset, the function is used as a subfunction later.
+
+    Args:
+        df (pandas.DataFrame): The DataFrame to modify.
+
+    Returns:
+        pandas.DataFrame: A modified DataFrame with the following column names:
+        'health', 'Company_missing', 'Feeling_left_out', and 'socially_isolated'.
+        Invalid responses in these columns are replaced with NaN values.
+
+    """
     df = df.copy()
     df = df.rename(
         columns={
@@ -94,6 +155,17 @@ def pl_subfunction(df):
 
 
 def replace_categorical_values(df, column, mapping):
+    """Replaces categorical values in a pandas DataFrame column with numeric values.
+
+    Args:
+        df (pandas.DataFrame): The input DataFrame.
+        column (str): The name of the column to replace values in.
+        mapping (dict): A dictionary mapping old values to new values.
+
+    Returns:
+        pandas.DataFrame: A copy of the input DataFrame with the specified column's categorical values replaced with numeric values.
+
+    """
     df = df.copy()
     # Convert column to string if a list is passed
     df[column] = df[column].replace(mapping)
@@ -123,8 +195,29 @@ column_to_replace1 = ["Company_missing", "Feeling_left_out", "socially_isolated"
 column_to_replace2 = ["health"]
 
 
-# Apply the function to replace the old categorical values with the new categorical values
 def pl_functions(df):
+    """The function calculates aggregate loneliness from three different indicators of loneliness, maps these indicators along with health to numerical values. It takes the aggregate loneliness from
+    2013 and 2017 and health indicator 2013 from pl dataset of SOEP.
+
+    Args:
+        df (pandas.DataFrame): A DataFrame - pl Dataset, containing the following columns:
+            - pid (int): Personal ID
+            - ple0008 (str): Self-rated health status
+            - plj0587 (str): Missing company
+            - plj0588 (str): Feeling left out
+            - plj0589 (str): Social isolation
+            - syear (int): Survey year
+            - hid (int): Household ID
+
+    Returns:
+        pandas.DataFrame: A DataFrame with the following columns:
+            - pid (int): Personal ID
+            - hid (int): Household ID
+            - aggregate_loneliness_2013 (float): Average of plj0587, plj0588, and plj0589 in 2013
+            - aggregate_loneliness_2017 (float): Average of plj0587, plj0588, and plj0589 in 2017
+            - health_2013 (float): Self-rated health status in 2013, mapped to a scale from 1 to 5
+
+    """
     df = df[["pid", "ple0008", "plj0587", "plj0588", "plj0589", "syear", "hid"]]
     df = df.copy()
     df = pl_subfunction(df)
@@ -152,6 +245,20 @@ def pl_functions(df):
 
 
 def pgen_covariates(df):
+    """Function applied on pgen Dataset of SOEP to generate covariates for Propensity score matching to find the effect of employment on loneliness. It filters out only employed people from 2013,
+    their marital status and years of education.
+
+    Args:
+    df (pandas.DataFrame): Input DataFrame containing the necessary variables.
+
+    Returns:
+    pandas.DataFrame: A DataFrame containing the following variables:
+    - marital_status: A binary variable indicating whether the individual is married and living with their spouse (1) or not (0).
+    - education: The number of years of education.
+    - pid: The personal ID.
+    - hid: The household ID.
+
+    """
     df = df.copy()
     df = filter_by_year(df, 2013)
     df = replace_invalid_responses(df, "pgfamstd", "category")
@@ -168,6 +275,18 @@ def pgen_covariates(df):
 
 
 def hgen_functions(df):
+    """Processes the household income data from the hgen dataset of SOEP and returns a dataframe with the household ID and income information for the year 2013.
+
+    Args:
+        df (pandas.DataFrame): hgen Dataset(Input Dataframe) containing household income data
+            from the SOEP dataset.
+
+    Returns:
+    pandas.DataFrame: A DataFrame containing the following variables:
+        hid : Household ID.
+        hh_income : Income of households from 2013.
+
+    """
     df = df[["hid", "hgi1hinc", "syear"]]
     df = df.copy()
     df = filter_by_year(df, 2013)
@@ -178,6 +297,16 @@ def hgen_functions(df):
 
 
 def hbrutto_functions(df):
+    """Processes the household members data from the hbrutto dataset of SOEP and returns a dataframe with the household ID and number of members in the household for the year 2013.
+
+    Args:
+        df (pandas.DataFrame): The input dataframe- Hbrutto Dataset from SOEP
+         containing the original household data.
+
+    Returns:
+        pandas.DataFrame: A new dataframe containing the household id and the number of household members.
+
+    """
     df = df[["hid", "syear", "hhgr"]]
     df = df.copy()
     df = filter_by_year(df, 2013)
@@ -187,17 +316,18 @@ def hbrutto_functions(df):
     return df
 
 
-def clean_data(pgen_treat_df, pgen_cov_df, ppath_df, pl_df, hgen_df, hbrutto_df):
-    pgen_treat_df = pgen_treatment(pgen_treat_df)
-    pl_df = pl_functions(pl_df)
-    pgen_cov_df = pgen_covariates(pgen_cov_df)
-    ppath_df = ppath_functions(ppath_df)
-    hgen_df = hgen_functions(hgen_df)
-    hbrutto_df = hbrutto_functions(hbrutto_df)
+def data_clean(pgen_treat_df, pgen_cov_df, ppath_df, pl_df, hgen_df, hbrutto_df):
+    """Perform cleaning and preprocessing on each of the SOEP datasets and merging them on Personal ID and / or Household ID."""
+    df1 = pgen_treatment(pgen_treat_df)
+    df2 = pl_functions(pl_df)
+    df3 = pgen_covariates(pgen_cov_df)
+    df4 = ppath_functions(ppath_df)
+    df5 = hgen_functions(hgen_df)
+    df6 = hbrutto_functions(hbrutto_df)
 
-    pgen_treat_df = pgen_treat_df.merge(ppath_df, on="pid")
-    hgen_df = hgen_df.merge(hbrutto_df, on="hid")
-    pgen_treat_df = pgen_treat_df.merge(pgen_cov_df, on=["pid", "hid"])
-    pgen_treat_df = pgen_treat_df.merge(pl_df, on=["pid", "hid"])
-    pgen_treat_df = pgen_treat_df.merge(hgen_df, on="hid")
-    return pgen_treat_df
+    df1 = df1.merge(df4, on="pid")
+    df5 = df5.merge(df6, on="hid")
+    df1 = df1.merge(df3, on=["pid", "hid"])
+    df1 = df1.merge(df2, on=["pid", "hid"])
+    df1 = df1.merge(df5, on="hid")
+    return df1

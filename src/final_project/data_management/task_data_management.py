@@ -4,7 +4,7 @@ import pandas as pd
 import pytask
 
 from final_project.config import BLD, SRC
-from final_project.data_management import clean_data
+from final_project.data_management.clean_data import data_clean
 
 
 @pytask.mark.depends_on(
@@ -25,5 +25,5 @@ def task_clean_data_python(depends_on, produces):
     pgen_cov_df = pd.read_stata(depends_on["data1"])
     hgen_df = pd.read_stata(depends_on["data4"])
     hbrutto_df = pd.read_stata(depends_on["data5"])
-    data = clean_data(pgen_treat_df, pgen_cov_df, ppath_df, pl_df, hgen_df, hbrutto_df)
+    data = data_clean(pgen_treat_df, pgen_cov_df, ppath_df, pl_df, hgen_df, hbrutto_df)
     data.to_csv(produces, index=False)
