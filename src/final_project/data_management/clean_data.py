@@ -187,17 +187,17 @@ def hbrutto_functions(df):
     return df
 
 
-def clean_data(df1, df_2013, df5, df6, df7, df8):
-    df1 = pgen_treatment(df1)
-    df6 = pl_functions(df6)
-    df_2013 = pgen_covariates(df_2013)
-    df5 = ppath_functions(df5)
-    df7 = hgen_functions(df7)
-    df8 = hbrutto_functions(df8)
+def clean_data(pgen_treat_df, pgen_cov_df, ppath_df, pl_df, hgen_df, hbrutto_df):
+    pgen_treat_df = pgen_treatment(pgen_treat_df)
+    pl_df = pl_functions(pl_df)
+    pgen_cov_df = pgen_covariates(pgen_cov_df)
+    ppath_df = ppath_functions(ppath_df)
+    hgen_df = hgen_functions(hgen_df)
+    hbrutto_df = hbrutto_functions(hbrutto_df)
 
-    df1 = df1.merge(df5, on="pid")
-    df7 = df7.merge(df8, on="hid")
-    df1 = df1.merge(df_2013, on=["pid", "hid"])
-    df1 = df1.merge(df6, on=["pid", "hid"])
-    df1 = df1.merge(df7, on="hid")
-    return df1
+    pgen_treat_df = pgen_treat_df.merge(ppath_df, on="pid")
+    hgen_df = hgen_df.merge(hbrutto_df, on="hid")
+    pgen_treat_df = pgen_treat_df.merge(pgen_cov_df, on=["pid", "hid"])
+    pgen_treat_df = pgen_treat_df.merge(pl_df, on=["pid", "hid"])
+    pgen_treat_df = pgen_treat_df.merge(hgen_df, on="hid")
+    return pgen_treat_df
