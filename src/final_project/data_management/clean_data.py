@@ -1,12 +1,11 @@
-"""Function(s) for cleaning the data set(s)."""
+"""Functions for cleaning the data sets."""
 
 import warnings
 
+import numpy as np
 import pandas as pd
 
 warnings.simplefilter(action="ignore", category=FutureWarning)
-import numpy as np
-import pandas as pd
 
 
 def filter_by_year(df, year):
@@ -44,7 +43,7 @@ def replace_invalid_responses(df, column, data_type):
     return df
 
 
-def unemp_duration(df):
+def pgen_treatment(df):
     df = df.copy()
     df = replace_invalid_responses(df, "pgexpue", "float")
     df_start = filter_by_year(df, 2013)
@@ -56,8 +55,8 @@ def unemp_duration(df):
         suffixes=("_2013", "_2017"),
         how="left",
     )
-    df_final["unemp_duration"] = df_final["pgexpue_2017"] - df_final["pgexpue_2013"]
-    df_final["went_unemployed"] = df_final["unemp_duration"].apply(
+    df_final["pgen_treatment"] = df_final["pgexpue_2017"] - df_final["pgexpue_2013"]
+    df_final["went_unemployed"] = df_final["pgen_treatment"].apply(
         lambda x: 1 if x >= 1 else 0,
     )
     df_final = df_final[["pid", "went_unemployed", "hid"]]
@@ -66,7 +65,7 @@ def unemp_duration(df):
     return df_final
 
 
-def age_and_sex(df):
+def ppath_functions(df):
     df = df[["pid", "sex", "gebjahr"]]
     df_copy = df.copy()
     df_copy.loc[:, "sex"] = np.where(df_copy["sex"] == "[1] maennlich", 1, 0)
@@ -77,7 +76,7 @@ def age_and_sex(df):
     return df_copy
 
 
-def pl_functions1(df):
+def pl_subfunction(df):
     df = df.copy()
     df = df.rename(
         columns={
@@ -128,7 +127,7 @@ column_to_replace2 = ["health"]
 def pl_functions(df):
     df = df[["pid", "ple0008", "plj0587", "plj0588", "plj0589", "syear", "hid"]]
     df = df.copy()
-    df = pl_functions1(df)
+    df = pl_subfunction(df)
     df = replace_categorical_values(df, column=column_to_replace1, mapping=mapping1)
     df = replace_categorical_values(df, column=column_to_replace2, mapping=mapping2)
     cols = ["Company_missing", "Feeling_left_out", "socially_isolated"]
@@ -152,7 +151,7 @@ def pl_functions(df):
     return df_merge
 
 
-def covariates(df):
+def pgen_covariates(df):
     df = df.copy()
     df = filter_by_year(df, 2013)
     df = replace_invalid_responses(df, "pgfamstd", "category")
@@ -189,10 +188,10 @@ def hbrutto_functions(df):
 
 
 def clean_data(df1, df_2013, df5, df6, df7, df8):
-    df1 = unemp_duration(df1)
+    df1 = pgen_treatment(df1)
     df6 = pl_functions(df6)
-    df_2013 = covariates(df_2013)
-    df5 = age_and_sex(df5)
+    df_2013 = pgen_covariates(df_2013)
+    df5 = ppath_functions(df5)
     df7 = hgen_functions(df7)
     df8 = hbrutto_functions(df8)
 
