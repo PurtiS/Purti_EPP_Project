@@ -13,6 +13,7 @@ from final_project.analysis.model import (
     run_logistic_ps,
 )
 from final_project.analysis.predict import (
+    get_loneliness_change,
     get_predicted_data,
     matched_df,
     predict_att_ate_regression,
@@ -35,4 +36,5 @@ __all__ = [
     perform_subgroup_analysis_health,
     perform_subgroup_analysis_hhsize,
     perform_subgroup_analysis_marital_status,
+    get_loneliness_change,
 ]
