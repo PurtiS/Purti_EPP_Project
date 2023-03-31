@@ -10,35 +10,38 @@
 
 ## Project overview
 
-This is a project created from Pytask Project template. The objective of the paper is to
-find the effect of unemployment on loneliness among working age population.
+This project was developed using the Pytask Project template with the aim of
+investigating the relationship between unemployment and loneliness among the working-age
+population.
 
-The project mainly contains a source folder and a tests folder, the former further
-contains sections for Data Management, Analysis, Original Data files and Plots. The
-tests folder comprises of a similar distribution with test functions for all the
-functions created in source files. The project uses Propensity score matching as the
-empirical strategy. After we get the filtered data, we implement matching in the
-Modeling and predict a Matched Dataset. This matched dataset is then used to run a
-regression and find Avergae Treatment Effect on the treated and Average Treatment
-Effect. The matching quality and the effect size of the variables is shown in the
+The project is composed of two main folders: a source folder and a tests folder. The
+source folder includes sections for managing data, analyzing data, storing original data
+files, and generating plots. The tests folder contains similar subfolders with test
+functions for all the functions created in the source files. The project adopts
+Propensity Score Matching as the empirical strategy. Once the data is filtered, we apply
+matching to generate a matched dataset. This matched dataset is then used to conduct
+regression analysis to identify the Average Treatment Effect for both the treated and
+control groups. The matching quality and effect sizes of variables are presented in the
 figures.
 
 ## Theoretical Motivation
 
-In order to analyse the effect of Unemployment on Loneliness, I have used SOEP Dataset
-for the original Datasets. There are three Loneliness measures, socially isolated,
-feeling left out and missing company of others. These were measured for the years
-2013-17 and therfore the analysis focuses on the mentioned time frame. These measure are
-combined as aggregate loneliness as an outcome in the year 2017. We look at the impact
-on loneliness for those who went unemployed in this period isloating the effect of other
-covariates using Propensity Score Matching and further conclude with Average Treatment
-effects.
+To examine the impact of unemployment on loneliness, I utilized the SOEP dataset as the
+primary source for data analysis. The dataset includes three distinct measures of
+loneliness, namely social isolation, feelings of exclusion, and the absence of company.
+These measures were assessed during the years 2013-17, and the analysis is therefore
+limited to this period. The measures were combined to form an overall measure of
+loneliness in 2017. To isolate the effect of unemployment from other covariates,
+Propensity Score Matching was employed, and Average Treatment Effects were subsequently
+calculated to determine the impact of unemployment on loneliness.
 
 ## Project Structure
 
 #### The SRC Folder contains the folder named final_project with following:
 
-- Data Folder- With compressed Datasets from SOEP used as original datasets
+- Data Folder- With compressed Datasets from SOEP used as original datasets. The
+  datasets used from SOEP are: pgen, ppathl, pl, hgen and hbrutto. Please find more
+  information in usage.
 - Data Management Folder - Contains data cleaning functions and produces a filtered
   dataset from the task executed inside it.
 - Analysis Folder - Contains models and predictions. We execute PSM, regression in the
@@ -59,6 +62,9 @@ effects.
 
 ## Usage
 
+- In order to use the datasets from SOEP, one can visit
+  https://www.diw.de/en/diw_01.c.601584.en/data_access.html. The datasets can be
+  directly used for the data cleaning functions created in the project.
 - The environment.yml file contians all the dependencies. Missinf dependencies can be
   installed.
 
