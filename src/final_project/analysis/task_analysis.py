@@ -70,7 +70,7 @@ def task_fit_model_python(depends_on, produces):
     },
 )
 @pytask.mark.produces(BLD / "python" / "predictions" / "regression.csv")
-def task_predict_python(depends_on, produces):
+def task_predict_ate_att(depends_on, produces):
     """Predict ATT and ATE based on the model estimates (Python version)."""
     data = pd.read_csv(depends_on["data"])
     model = load_model(depends_on["model"])
@@ -84,7 +84,7 @@ def task_predict_python(depends_on, produces):
     },
 )
 @pytask.mark.produces(BLD / "python" / "predictions" / "subgroup_age.csv")
-def task_subgroup_analysis(depends_on, produces):
+def task_robustness_subgroup_analysis(depends_on, produces):
     """Subgroup Analysis for age."""
     data = pd.read_csv(depends_on["data"])
     predicted = perform_subgroup_analysis_age(data)
@@ -97,7 +97,7 @@ def task_subgroup_analysis(depends_on, produces):
     },
 )
 @pytask.mark.produces(BLD / "python" / "predictions" / "subgroup_gender.csv")
-def task_subgroup_analysis_gender(depends_on, produces):
+def task_robustness_subgroup_analysis_gender(depends_on, produces):
     """Subgroup Analysis based on sex."""
     data = pd.read_csv(depends_on["data"])
     predicted = perform_subgroup_analysis_gender(data)
@@ -110,7 +110,7 @@ def task_subgroup_analysis_gender(depends_on, produces):
     },
 )
 @pytask.mark.produces(BLD / "python" / "predictions" / "subgroup_marital_status.csv")
-def task_subgroup_analysis_marital_status(depends_on, produces):
+def task_robustness_subgroup_analysis_marital_status(depends_on, produces):
     """Subgroup Analysis based on marital status."""
     data = pd.read_csv(depends_on["data"])
     predicted = perform_subgroup_analysis_marital_status(data)
@@ -123,7 +123,7 @@ def task_subgroup_analysis_marital_status(depends_on, produces):
     },
 )
 @pytask.mark.produces(BLD / "python" / "predictions" / "subgroup_health.csv")
-def task_subgroup_analysis_health(depends_on, produces):
+def task_robustness_subgroup_analysis_health(depends_on, produces):
     """Subgroup Analysis based on health."""
     data = pd.read_csv(depends_on["data"])
     predicted = perform_subgroup_analysis_health(data)
@@ -136,7 +136,7 @@ def task_subgroup_analysis_health(depends_on, produces):
     },
 )
 @pytask.mark.produces(BLD / "python" / "predictions" / "subgroup_education.csv")
-def task_subgroup_analysis_education(depends_on, produces):
+def task_robustness_subgroup_analysis_education(depends_on, produces):
     """Subgroup Analysis based on education."""
     data = pd.read_csv(depends_on["data"])
     predicted = perform_subgroup_analysis_education(data)
@@ -149,7 +149,7 @@ def task_subgroup_analysis_education(depends_on, produces):
     },
 )
 @pytask.mark.produces(BLD / "python" / "predictions" / "subgroup_household_size.csv")
-def task_subgroup_analysis_hhsize(depends_on, produces):
+def task_robustness_subgroup_analysis_hhsize(depends_on, produces):
     """Subgroup Analysis based on the size of household."""
     data = pd.read_csv(depends_on["data"])
     predicted = perform_subgroup_analysis_hhsize(data)
