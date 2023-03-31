@@ -59,6 +59,9 @@ effects.
 
 ## Usage
 
+- The environment.yml file contians all the dependencies. Missinf dependencies can be
+  installed.
+
 To get started, create and activate the environment with
 
 ```console
