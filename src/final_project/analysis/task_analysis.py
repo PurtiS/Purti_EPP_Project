@@ -9,8 +9,10 @@ from final_project.analysis.model import (
     fit_regression_model,
     load_model,
     perform_subgroup_analysis_age,
+    perform_subgroup_analysis_education,
     perform_subgroup_analysis_gender,
     perform_subgroup_analysis_health,
+    perform_subgroup_analysis_hhsize,
     perform_subgroup_analysis_marital_status,
     run_logistic_ps,
 )
@@ -124,4 +126,30 @@ def task_subgroup_analysis_health(depends_on, produces):
     """Subgroup Analysis based on health."""
     data = pd.read_csv(depends_on["data"])
     predicted = perform_subgroup_analysis_health(data)
+    predicted.to_csv(produces, index=False)
+
+
+@pytask.mark.depends_on(
+    {
+        "data": BLD / "python" / "predictions" / "data_matched.csv",
+    },
+)
+@pytask.mark.produces(BLD / "python" / "predictions" / "subgroup_education.csv")
+def task_subgroup_analysis_education(depends_on, produces):
+    """Subgroup Analysis based on education."""
+    data = pd.read_csv(depends_on["data"])
+    predicted = perform_subgroup_analysis_education(data)
+    predicted.to_csv(produces, index=False)
+
+
+@pytask.mark.depends_on(
+    {
+        "data": BLD / "python" / "predictions" / "data_matched.csv",
+    },
+)
+@pytask.mark.produces(BLD / "python" / "predictions" / "subgroup_household_size.csv")
+def task_subgroup_analysis_hhsize(depends_on, produces):
+    """Subgroup Analysis based on the size of household."""
+    data = pd.read_csv(depends_on["data"])
+    predicted = perform_subgroup_analysis_hhsize(data)
     predicted.to_csv(produces, index=False)

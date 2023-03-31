@@ -348,3 +348,118 @@ def perform_subgroup_analysis_health(matched_data):
     )
 
     return results_df
+
+
+def perform_subgroup_analysis_education(matched_data):
+    """Performs subgroup analysis on a matched dataset by education level.
+
+    Parameters:
+    - matched_data (pandas DataFrame): the matched dataset to perform subgroup analysis on
+
+    Returns:
+    - results_df (pandas DataFrame): a dataframe containing the treatment effect and p-value for each subgroup.
+
+    """
+    # Subset the data into education subgroups
+    high_edu_subgroup = matched_data[matched_data["education"] >= 13]
+    low_edu_subgroup = matched_data[matched_data["education"] < 13]
+
+    # Calculate treatment effect for each subgroup
+    high_edu_effect = (
+        sm.OLS(
+            high_edu_subgroup["aggregate_loneliness_2017"],
+            high_edu_subgroup["went_unemployed"],
+        )
+        .fit()
+        .params[0]
+    )
+    low_edu_effect = (
+        sm.OLS(
+            low_edu_subgroup["aggregate_loneliness_2017"],
+            low_edu_subgroup["went_unemployed"],
+        )
+        .fit()
+        .params[0]
+    )
+
+    # Conduct statistical tests for each subgroup
+    high_edu_pvalue = (
+        sm.OLS(
+            high_edu_subgroup["aggregate_loneliness_2017"],
+            high_edu_subgroup["went_unemployed"],
+        )
+        .fit()
+        .pvalues[0]
+    )
+    low_edu_pvalue = (
+        sm.OLS(
+            low_edu_subgroup["aggregate_loneliness_2017"],
+            low_edu_subgroup["went_unemployed"],
+        )
+        .fit()
+        .pvalues[0]
+    )
+
+    # Store the results in a dataframe
+    results_df = pd.DataFrame(
+        {
+            "Subgroup": ["High Education (>=13)", "Low Education (<13)"],
+            "Treatment Effect": [high_edu_effect, low_edu_effect],
+            "P-Value": [high_edu_pvalue, low_edu_pvalue],
+        },
+    )
+
+    return results_df
+
+
+def perform_subgroup_analysis_hhsize(matched_data):
+    # Subset the data into household members subgroups
+    low_hh_members_subgroup = matched_data[matched_data["hh_members"] < 2]
+    high_hh_members_subgroup = matched_data[matched_data["hh_members"] >= 2]
+
+    # Calculate treatment effect for each subgroup
+    low_hh_members_effect = (
+        sm.OLS(
+            low_hh_members_subgroup["aggregate_loneliness_2017"],
+            low_hh_members_subgroup["went_unemployed"],
+        )
+        .fit()
+        .params[0]
+    )
+    high_hh_members_effect = (
+        sm.OLS(
+            high_hh_members_subgroup["aggregate_loneliness_2017"],
+            high_hh_members_subgroup["went_unemployed"],
+        )
+        .fit()
+        .params[0]
+    )
+
+    # Conduct statistical tests for each subgroup
+    low_hh_members_pvalue = (
+        sm.OLS(
+            low_hh_members_subgroup["aggregate_loneliness_2017"],
+            low_hh_members_subgroup["went_unemployed"],
+        )
+        .fit()
+        .pvalues[0]
+    )
+    high_hh_members_pvalue = (
+        sm.OLS(
+            high_hh_members_subgroup["aggregate_loneliness_2017"],
+            high_hh_members_subgroup["went_unemployed"],
+        )
+        .fit()
+        .pvalues[0]
+    )
+
+    # Store the results in a dataframe
+    results_df = pd.DataFrame(
+        {
+            "Subgroup": ["HH Members < 2", "HH Members >= 2"],
+            "Treatment Effect": [low_hh_members_effect, high_hh_members_effect],
+            "P-Value": [low_hh_members_pvalue, high_hh_members_pvalue],
+        },
+    )
+
+    return results_df
