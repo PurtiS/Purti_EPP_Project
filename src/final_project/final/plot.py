@@ -229,3 +229,38 @@ def plot_loneliness_by_hh_size(data):
     ax.legend()
 
     return fig
+
+
+def plot_loneliness_by_hh_income(data):
+    """Plots a line graph showing the difference in aggregate loneliness levels between households with higher than average income and those with lower than average income in 2013 and 2017."""
+    data["hh_high_income"] = (data["hh_income"] > 3500).astype(int)
+
+    hh_high_income_data = data.loc[
+        data["hh_high_income"] == 1,
+        ["aggregate_loneliness_2013", "aggregate_loneliness_2017"],
+    ]
+    hh_low_income_data = data.loc[
+        data["hh_high_income"] == 0,
+        ["aggregate_loneliness_2013", "aggregate_loneliness_2017"],
+    ]
+
+    hh_high_income_means = hh_high_income_data.mean()
+    hh_low_income_means = hh_low_income_data.mean()
+    fig, ax = plt.subplots()
+    ax.plot(
+        hh_high_income_means.index,
+        hh_high_income_means.values,
+        label="Household income > 3500",
+    )
+    ax.plot(
+        hh_low_income_means.index,
+        hh_low_income_means.values,
+        label="Household income <= 3500",
+    )
+
+    ax.set_xlabel("Year")
+    ax.set_ylabel("Aggregate loneliness")
+    ax.set_title("Loneliness by Household Income")
+    ax.legend()
+
+    return fig
