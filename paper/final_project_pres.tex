@@ -39,15 +39,14 @@
 \author[Purti Sadhwani]
 {
 {\bf Purti Sadhwani}\\
-{\small University of Bonn}\\[1ex]
-}
+{\small University of Bonn}\\[1ex]}
 
 
 \begin{frame}[t]
     \frametitle{Introduction}
     \begin{itemize}
     \item This paper examines loneliness and its relationship with unemployment. More specifically,
-    whether unemployment is a causal explanation for feelings of loneliness. The structure is as
+    whether unemployment is a causal explanation for feelings of loneliness\cite{cacioppo2008loneliness}. The structure is as
     follows: this section gives an overview of the literature surrounding the consequences and
     causes of loneliness and motivates why the link with unemployment should be of interest.
     Section 2 describes the chosen dataset. Section 3.1 explains the issues of causal interpretation when identifying the impact of unemployment and 3.2 outlines the chosen empirical
@@ -69,7 +68,7 @@
             and that the company of others is missing. All scored in a 1 (Bad / Very often) to 5 (Good
             / Never) interval. We generate an aggregate loneliness variable, taking the average of all
             three answers. For the rest of this paper, we emphasise that low levels of the loneliness
-            variable, represents more frequent feelings of loneliness.
+            variable, represents more frequent feelings of loneliness.\cite{caliendo2008some}
      \end{itemize}
     \note{~}
 \end{frame}
@@ -77,9 +76,9 @@
 \begin{frame}[t]
     \frametitle{Empirical Analysis}
      \begin{itemize}
-          \item Our approach in order to isolate the impact of unemployment on loneliness is to use PSM.\@
+          \item Our approach in order to isolate the impact of unemployment on loneliness is to use PSM.\\
           \item PSM attempts to emulate randomisation of treatment, by conditioning on selected observable characteristics. Thus, the untreated individuals can be compared to the treated with
-            respect to the control variables./citep
+            respect to the control variables.
             There are two important assumptions that need to be satisfied, in order for PSM to
             give a causal interpretation. The first being unconfoundedness,
             implying that the covariates should be independent of the treatment or the anticipation
@@ -120,7 +119,7 @@
         \caption{\emph{Python:} Model predictions of the smoking probability over the
             lifetime. Each colored line represents a case where marital status is fixed to
             one of the values present in the data set.}
-\label{fig:python-predictions}
+label{fig:python-predictions}
 
     \end{figure}
 \end{frame}
