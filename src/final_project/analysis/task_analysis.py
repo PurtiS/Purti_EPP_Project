@@ -62,10 +62,10 @@ def task_fit_model_python(depends_on, produces):
         "model": BLD / "python" / "models" / "model.pickle",
     },
 )
-@pytask.mark.task(BLD / "python" / "predictions" / "regression.csv")
+@pytask.mark.produces(BLD / "python" / "predictions" / "regression.csv")
 def task_predict_python(depends_on, produces):
     """Predict based on the model estimates (Python version)."""
     data = pd.read_csv(depends_on["data"])
     model = load_model(depends_on["model"])
     predicted = predict_att_ate_regression(data, model)
-    predicted.to_csv("bld/python/predictions/regression.csv")
+    predicted.to_csv(produces, index=False)

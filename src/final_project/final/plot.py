@@ -272,7 +272,7 @@ def plot_loneliness_by_hh_income(data):
 
 
 def plot_loneliness_by_health(data):
-    """Plots a line graph showing the difference in aggregate loneliness levels between households with higher than average health and those with lower than average health in 2013 and 2017."""
+    """Plots a line graph showing the difference in aggregate loneliness levels between people having higher than average health and those with lower than average health in 2013 and 2017."""
     data["above_avg_health"] = (data["health_2013"] > 2).astype(int)
 
     above_avg_health_data = data.loc[

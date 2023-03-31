@@ -69,7 +69,6 @@ def predict_att_ate_regression(data, model):
     ate = treated_mean - control_mean
 
     # Return results
-    result_dict = {"ATT": [att], "ATE": [ate]}
-    result = pd.DataFrame(result_dict, index=[0])
+    result = pd.DataFrame({"ATT": [att], "ATE": [ate]})
 
     return result
