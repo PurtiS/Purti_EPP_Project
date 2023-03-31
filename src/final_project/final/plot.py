@@ -5,18 +5,34 @@ from psmpy.plotting import *
 
 
 def plot_match(psm, title, ylabel, xlabel, names):
+    """Plots the match between treatment and control groups for all teh covariates to see the matching quality."""
     psm.plot_match(Title=title, Ylabel=ylabel, Xlabel=xlabel, names=names)
 
 
 def plot_effect_size(psm):
+    """Plots the effect size of covariates that is the standardized difference in means of the covariates between the treatment and control groups, before and after matching has been performed."""
     return psm.effect_size_plot()
 
 
 def effect_size_table(psm):
+    """Returns a table of effect sizes for the matched data."""
     return psm.effect_size
 
 
 def plot_loneliness_by_employment(data):
+    """Plot the mean loneliness levels for 2013 and 2017 for those who went unemployed and those who stayed employed during the same period.
+
+    Parameters:
+    -----------
+    data : pandas.DataFrame
+        A DataFrame containing the columns "went_unemployed", "aggregate_loneliness_2013", and "aggregate_loneliness_2017".
+
+    Returns:
+    --------
+    fig : matplotlib.figure.Figure
+        The Figure object that contains the plot.
+
+    """
     # Subset the data for people who went unemployed and those who did not
     unemployed_means = [
         data[data["went_unemployed"] == 1]["aggregate_loneliness_2013"].mean(),
@@ -97,7 +113,7 @@ def plot_loneliness_by_gender_and_employment(data):
     x = np.arange(len(labels))
     width = 0.35
 
-    fig, ax = plt.subplots()
+    fig, ax = plt.subplots(figsize=(15, 8))
     ax.bar(
         x - width / 2,
         men_unemployed_means,
@@ -130,5 +146,6 @@ def plot_loneliness_by_gender_and_employment(data):
     ax.set_title("Loneliness by employment status and gender")
 
     # Remove legend from the bar chart
-    ax.legend(loc="upper center", bbox_to_anchor=(0.5, -0.15), ncol=4)
+    ax.legend(loc="lower left", ncol=4)
+
     return fig
