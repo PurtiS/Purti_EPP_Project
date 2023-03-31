@@ -19,7 +19,7 @@ def effect_size_table(psm):
     return psm.effect_size
 
 
-def plot_loneliness_by_employment(data):
+def plot_loneliness_by_unemployment(data):
     """Plot the mean loneliness levels for 2013 and 2017 for those who went unemployed and those who stayed employed during the same period.
 
     Parameters:
@@ -64,6 +64,12 @@ def plot_loneliness_by_employment(data):
 
 
 def plot_loneliness_by_gender_and_employment(data):
+    """The function takes a pandas DataFrame data as input and creates a bar chart that shows the mean level of loneliness in 2013 and 2017 for four groups: men who went unemployed, men who stayed
+    employed, women who went unemployed, and women who stayed employed.
+
+    The function returns the created figure.
+
+    """
     # Data for men
     men_unemployed_means = [
         data.loc[

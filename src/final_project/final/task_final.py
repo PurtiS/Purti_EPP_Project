@@ -9,9 +9,9 @@ from final_project.config import BLD
 from final_project.final.plot import (
     effect_size_table,
     plot_effect_size,
-    plot_loneliness_by_employment,
     plot_loneliness_by_gender_and_employment,
     plot_loneliness_by_marital_status_unemployment,
+    plot_loneliness_by_unemployment,
     plot_match,
 )
 
@@ -73,11 +73,11 @@ def task_plot_results1(depends_on, produces):
         "data": BLD / "python" / "data" / "data_clean.csv",
     },
 )
-@pytask.mark.produces(BLD / "python" / "figures" / "descriptive stats_1.png")
-def task_plot_results2(depends_on, produces):
+@pytask.mark.produces(BLD / "python" / "figures" / "descriptive_stats_1.png")
+def task_plot_des_stats_1(depends_on, produces):
     """Plot the regression results by age (Python version)."""
     data = pd.read_csv(depends_on["data"])
-    fig = plot_loneliness_by_employment(data)
+    fig = plot_loneliness_by_unemployment(data)
     fig.savefig(produces)
 
 
