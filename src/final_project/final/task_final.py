@@ -57,6 +57,40 @@ def task_plot_results(depends_on, produces):
         "data": BLD / "python" / "data" / "data_clean.csv",
     },
 )
+@pytask.mark.produces(BLD / "python" / "figures" / "matching_caliper.png")
+def task_plot_results_with_caliper(depends_on, produces):
+    """Plot the match quality of different covariates, it shows that we now have similar people to compare the effects of unemployment. We make replacement as True and choose a caliper of 0.2 to
+    improve the match quality.
+
+    The results are derived from the psmpy library
+
+    """
+    data = pd.read_csv(depends_on["data"])
+    data = drop_na(data)
+    psm = create_psm(
+        data,
+        treatment="went_unemployed",
+        indx="pid",
+        exclude=["hid", "aggregate_loneliness_2017"],
+    )
+    run_logistic_ps(psm, balance=False)
+    get_predicted_data(psm)
+    run_knn_matched(psm, matcher="propensity_score", replacement=True, caliper=0.2)
+    plot_match(
+        psm,
+        title="Matching Result",
+        ylabel="# of obs",
+        xlabel="propensity logit",
+        names=["treatment", "control"],
+    )
+    plt.savefig(produces)
+
+
+@pytask.mark.depends_on(
+    {
+        "data": BLD / "python" / "data" / "data_clean.csv",
+    },
+)
 @pytask.mark.produces(BLD / "python" / "figures" / "effect_size.png")
 def task_plot_effect_size(depends_on, produces):
     """Plot the effect sizes of different covariates affecting the outcome variable before and after matching."""

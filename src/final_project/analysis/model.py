@@ -413,6 +413,15 @@ def perform_subgroup_analysis_education(matched_data):
 
 
 def perform_subgroup_analysis_hhsize(matched_data):
+    """Performs subgroup analysis on a matched dataset by number of members in the household.
+
+    Parameters:
+    - matched_data (pandas DataFrame): the matched dataset to perform subgroup analysis on
+
+    Returns:
+    - results_df (pandas DataFrame): a dataframe containing the treatment effect and p-value for each subgroup.
+
+    """
     # Subset the data into household members subgroups
     low_hh_members_subgroup = matched_data[matched_data["hh_members"] < 2]
     high_hh_members_subgroup = matched_data[matched_data["hh_members"] >= 2]

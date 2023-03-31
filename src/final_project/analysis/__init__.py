@@ -4,6 +4,12 @@ from final_project.analysis.model import (
     drop_na,
     fit_regression_model,
     load_model,
+    perform_subgroup_analysis_age,
+    perform_subgroup_analysis_education,
+    perform_subgroup_analysis_gender,
+    perform_subgroup_analysis_health,
+    perform_subgroup_analysis_hhsize,
+    perform_subgroup_analysis_marital_status,
     run_logistic_ps,
 )
 from final_project.analysis.predict import (
@@ -23,4 +29,10 @@ __all__ = [
     matched_df,
     predict_att_ate_regression,
     run_knn_matched,
+    perform_subgroup_analysis_age,
+    perform_subgroup_analysis_education,
+    perform_subgroup_analysis_gender,
+    perform_subgroup_analysis_health,
+    perform_subgroup_analysis_hhsize,
+    perform_subgroup_analysis_marital_status,
 ]
