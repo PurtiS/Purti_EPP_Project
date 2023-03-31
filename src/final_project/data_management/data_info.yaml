@@ -1,15 +1,13 @@
 ---
 data_name: data.csv
-columns_to_drop:
-  - nationality
-  - ethnicity
-  - region
-  - amt_weekends
-  - amt_weekdays
-  - type
-  - gross_income
-categorical_columns: [gender, marital_status, highest_qualification, smoke]
-column_rename_mapping:
-  highest_qualification: qualification
-outcome: smoke
-outcome_numerical: smoke_numerical  # created during the clean_data step
+categorical_columns:
+  - sex
+  - marital_status
+  - health
+  - Company_missing
+  - Feeling_left_out
+  - socially_isolated
+  - pgemplst
+column_rename_mapping: null
+outcome: aggregate_loenliness_2017
+treatment: went_unemployed
