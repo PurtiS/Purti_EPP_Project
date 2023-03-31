@@ -108,7 +108,6 @@ def plot_loneliness_by_gender_and_employment(data):
         ].mean(),
     ]
 
-    # Plotting the data
     labels = ["2013", "2017"]
     x = np.arange(len(labels))
     width = 0.35
@@ -139,20 +138,18 @@ def plot_loneliness_by_gender_and_employment(data):
         label="Women: Stayed employed",
     )
 
-    # Adding some labels and title
     ax.set_ylabel("Loneliness")
     ax.set_xticks(x)
     ax.set_xticklabels(labels)
     ax.set_title("Loneliness by employment status and gender")
 
-    # Remove legend from the bar chart
     ax.legend(loc="lower left", ncol=4)
 
     return fig
 
 
 def plot_loneliness_by_marital_status_unemployment(data):
-    # Data for married people who went unemployed
+    """This function takes in a pandas DataFrame data and plots the mean loneliness scores for people who went unemployed, grouped by their marital status."""
     married_unemployed_means = [
         data.loc[
             (data["went_unemployed"] == 1)
@@ -168,7 +165,6 @@ def plot_loneliness_by_marital_status_unemployment(data):
         ].mean(),
     ]
 
-    # Data for unmarried people who went unemployed
     unmarried_unemployed_means = [
         data.loc[
             (data["went_unemployed"] == 1)
@@ -184,17 +180,14 @@ def plot_loneliness_by_marital_status_unemployment(data):
         ].mean(),
     ]
 
-    # Plotting the data
     labels = ["2013", "2017"]
     x = np.arange(len(labels))
 
     fig, ax = plt.subplots()
 
-    # Plotting lines instead of bars
     ax.plot(x, married_unemployed_means, "-o", label="Married: Went Unemployed")
     ax.plot(x, unmarried_unemployed_means, "-o", label="Unmarried: Went Unemployed")
 
-    # Adding some labels and title
     ax.set_ylabel("Loneliness")
     ax.set_xticks(x)
     ax.set_xticklabels(labels)

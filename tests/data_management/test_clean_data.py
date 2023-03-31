@@ -31,15 +31,15 @@ def test_replace_invalid_responses(data):
     pd.testing.assert_series_equal(df["pgexpue"], expected_series, check_dtype=False)
 
 
-def test_unemp_duration(data):
+def test_pgen_treatment(data):
     expected_output = pd.DataFrame(
         {"pid": [1, 2, 3, 4], "went_unemployed": [0, 1, 1, 0], "hid": [5, 6, 7, 8]},
     )
-    output = cleaned_fn.unemp_duration(data)
+    output = cleaned_fn.pgen_treatment(data)
     pd.testing.assert_frame_equal(output, expected_output)
 
 
-def test_age_and_sex(data):
+def test_ppath_functions(data):
     expected_output = pd.DataFrame(
         {
             "age": [28.0, 28.0, 28.0, 28.0, 28.0, 28.0, 34.0, 34.0, 34.0],
@@ -49,7 +49,7 @@ def test_age_and_sex(data):
     )
     expected_output["sex"] = expected_output["sex"].astype("int32")
     expected_output = expected_output.reset_index(drop=True)
-    output = cleaned_fn.age_and_sex(data)
+    output = cleaned_fn.ppath_functions(data)
     output = output.sort_values(by=["pid", "age"]).reset_index(drop=True)
     pd.testing.assert_frame_equal(output, expected_output)
 
@@ -72,7 +72,7 @@ def test_pl_functions(data):
     pd.testing.assert_frame_equal(output, expected_output)
 
 
-def test_covariates(data):
+def test_pgen_covariates(data):
     expected_output = pd.DataFrame(
         {
             "marital_status": [1, 1],
@@ -84,7 +84,7 @@ def test_covariates(data):
     expected_output["marital_status"] = expected_output["marital_status"].astype(
         "int32",
     )
-    output = cleaned_fn.covariates(data)
+    output = cleaned_fn.pgen_covariates(data)
     output = output.reset_index(drop=True)
     # Check if the output matches the expected output
     pd.testing.assert_frame_equal(output, expected_output)
