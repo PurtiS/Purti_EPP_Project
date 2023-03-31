@@ -72,3 +72,56 @@ def predict_att_ate_regression(data, model):
     result = pd.DataFrame({"ATT": [att], "ATE": [ate]})
 
     return result
+
+
+def get_loneliness_change(matched_data):
+    """The funcion takes the matched dataset and finds the difference in the aggregate loneliness levels(2017) of people who had the same aggregate loneliness levels in 2013 but some of them went
+    unemployed and the others did not.
+
+    This clearly indicates that when starting with the sme levels of loneliness, those who experience unemployement are more lonely thena those who stayed employed during the same period of time.
+
+    """
+    # Create a subset of data for individuals who went unemployed
+    unemployed = matched_data[matched_data["went_unemployed"] == 1]
+
+    # Create a subset of data for individuals who did not go unemployed
+    not_unemployed = matched_data[matched_data["went_unemployed"] == 0]
+
+    # Group by the initial level of loneliness in 2013 and calculate the mean loneliness change
+    agg_loneliness_2013 = matched_data.groupby("aggregate_loneliness_2013").agg(
+        {"aggregate_loneliness_2017": "mean"},
+    )
+
+    # Merge the unemployment data with the loneliness data
+    unemployed_merged = pd.merge(
+        agg_loneliness_2013,
+        unemployed,
+        on="aggregate_loneliness_2013",
+        how="inner",
+    )
+    not_unemployed_merged = pd.merge(
+        agg_loneliness_2013,
+        not_unemployed,
+        on="aggregate_loneliness_2013",
+        how="inner",
+    )
+
+    # Calculate the change in loneliness between 2013 and 2017 for each group
+    unemployed_merged["loneliness_change"] = (
+        unemployed_merged["aggregate_loneliness_2017_y"]
+        - unemployed_merged["aggregate_loneliness_2013"]
+    )
+    not_unemployed_merged["loneliness_change"] = (
+        not_unemployed_merged["aggregate_loneliness_2017_y"]
+        - not_unemployed_merged["aggregate_loneliness_2013"]
+    )
+
+    # Calculate the difference in loneliness change between the two groups
+    diff = pd.DataFrame(
+        {
+            unemployed_merged["loneliness_change"].mean()
+            - not_unemployed_merged["loneliness_change"].mean(),
+        },
+    )
+
+    return diff

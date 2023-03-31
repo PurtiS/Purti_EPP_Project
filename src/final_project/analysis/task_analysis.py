@@ -17,6 +17,7 @@ from final_project.analysis.model import (
     run_logistic_ps,
 )
 from final_project.analysis.predict import (
+    get_loneliness_change,
     get_predicted_data,
     matched_df,
     predict_att_ate_regression,
@@ -152,4 +153,21 @@ def task_subgroup_analysis_hhsize(depends_on, produces):
     """Subgroup Analysis based on the size of household."""
     data = pd.read_csv(depends_on["data"])
     predicted = perform_subgroup_analysis_hhsize(data)
+    predicted.to_csv(produces, index=False)
+
+
+@pytask.mark.depends_on(
+    {
+        "data": BLD / "python" / "predictions" / "data_matched.csv",
+    },
+)
+@pytask.mark.produces(BLD / "python" / "predictions" / "change_loneliness.csv")
+def task_change_loneliness_levels(depends_on, produces):
+    """Difference in loneliness in 2017 for those who had the same levels of loneliness in 2013, comparing people on their experience of unemployment.
+
+    This gives the change in loneliness levels only because of job loss.
+
+    """
+    data = pd.read_csv(depends_on["data"])
+    predicted = get_loneliness_change(data)
     predicted.to_csv(produces, index=False)
