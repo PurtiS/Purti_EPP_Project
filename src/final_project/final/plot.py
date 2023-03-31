@@ -196,3 +196,36 @@ def plot_loneliness_by_marital_status_unemployment(data):
     plt.title("Loneliness by marital status and unemployment status")
 
     return fig
+
+
+def plot_loneliness_by_hh_size(data):
+    """This function takes a pandas DataFrame as input and creates a line plot of the difference between aggregate loneliness levels in 2013 and 2017 for individuals in households with more than two
+    members (hh_members > 2) versus those in smaller households.
+
+    The function returns the resulting matplotlib figure object.
+
+    """
+    data["hh_large"] = (data["hh_members"] > 2).astype(int)
+
+    hh_large_data = data.loc[
+        data["hh_large"] == 1,
+        ["aggregate_loneliness_2013", "aggregate_loneliness_2017"],
+    ]
+    hh_small_data = data.loc[
+        data["hh_large"] == 0,
+        ["aggregate_loneliness_2013", "aggregate_loneliness_2017"],
+    ]
+
+    hh_large_means = hh_large_data.mean()
+    hh_small_means = hh_small_data.mean()
+
+    fig, ax = plt.subplots()
+    ax.plot(hh_large_means.index, hh_large_means.values, label="Household size > 2")
+    ax.plot(hh_small_means.index, hh_small_means.values, label="Household size <= 2")
+
+    ax.set_xlabel("Year")
+    ax.set_ylabel("Aggregate loneliness")
+    ax.set_title("Loneliness by Household Size")
+    ax.legend()
+
+    return fig
