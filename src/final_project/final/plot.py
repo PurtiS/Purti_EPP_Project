@@ -232,6 +232,12 @@ def plot_loneliness_by_hh_size(data):
 
 
 def plot_loneliness_by_hh_income(data):
+    """This function takes a pandas DataFrame as input and creates a line plot of the difference between aggregate loneliness levels in 2013 and 2017 for individuals in household income>3500 (average)
+    and those with lesser than 3500.
+
+    The function returns the resulting matplotlib figure object.
+
+    """
     """Plots a line graph showing the difference in aggregate loneliness levels between households with higher than average income and those with lower than average income in 2013 and 2017."""
     data["hh_high_income"] = (data["hh_income"] > 3500).astype(int)
 
@@ -261,6 +267,40 @@ def plot_loneliness_by_hh_income(data):
     ax.set_xlabel("Year")
     ax.set_ylabel("Aggregate loneliness")
     ax.set_title("Loneliness by Household Income")
+    ax.legend()
+
+    return fig
+
+
+def plot_loneliness_by_health(data):
+    data["above_avg_health"] = (data["health_2013"] > 2).astype(int)
+
+    above_avg_health_data = data.loc[
+        data["above_avg_health"] == 1,
+        ["aggregate_loneliness_2013", "aggregate_loneliness_2017"],
+    ]
+    below_avg_health_data = data.loc[
+        data["above_avg_health"] == 0,
+        ["aggregate_loneliness_2013", "aggregate_loneliness_2017"],
+    ]
+    above_avg_health_means = above_avg_health_data.mean()
+    below_avg_health_means = below_avg_health_data.mean()
+
+    fig, ax = plt.subplots()
+    ax.plot(
+        above_avg_health_means.index,
+        above_avg_health_means.values,
+        label="Health > 2",
+    )
+    ax.plot(
+        below_avg_health_means.index,
+        below_avg_health_means.values,
+        label="Health <= 2",
+    )
+
+    ax.set_xlabel("Year")
+    ax.set_ylabel("Aggregate loneliness")
+    ax.set_title("Loneliness by Health Status")
     ax.legend()
 
     return fig

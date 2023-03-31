@@ -10,6 +10,7 @@ from final_project.final.plot import (
     effect_size_table,
     plot_effect_size,
     plot_loneliness_by_gender_and_employment,
+    plot_loneliness_by_health,
     plot_loneliness_by_hh_income,
     plot_loneliness_by_hh_size,
     plot_loneliness_by_marital_status_unemployment,
@@ -157,4 +158,17 @@ def task_plot_hh_income(depends_on, produces):
     """Plot the regression results by age (Python version)."""
     data = pd.read_csv(depends_on["data"])
     fig = plot_loneliness_by_hh_income(data)
+    fig.savefig(produces)
+
+
+@pytask.mark.depends_on(
+    {
+        "data": BLD / "python" / "data" / "data_clean.csv",
+    },
+)
+@pytask.mark.produces(BLD / "python" / "figures" / "descriptive_stats_6.png")
+def task_plot_health_indicator(depends_on, produces):
+    """Plot the regression results by age (Python version)."""
+    data = pd.read_csv(depends_on["data"])
+    fig = plot_loneliness_by_health(data)
     fig.savefig(produces)
