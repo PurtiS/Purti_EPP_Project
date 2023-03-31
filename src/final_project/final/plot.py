@@ -33,7 +33,6 @@ def plot_loneliness_by_unemployment(data):
         The Figure object that contains the plot.
 
     """
-    # Subset the data for people who went unemployed and those who did not
     unemployed_means = [
         data[data["went_unemployed"] == 1]["aggregate_loneliness_2013"].mean(),
         data[data["went_unemployed"] == 1]["aggregate_loneliness_2017"].mean(),
@@ -43,17 +42,12 @@ def plot_loneliness_by_unemployment(data):
         data[data["went_unemployed"] == 0]["aggregate_loneliness_2017"].mean(),
     ]
 
-    # Create a line plot to compare the mean loneliness levels for each group in both years
     x = [2013, 2017]
-
-    # Figure and axis
     fig, ax = plt.subplots()
 
-    # Lines
     (line1,) = ax.plot(x, unemployed_means, label="Went Unemployed", marker="o")
     (line2,) = ax.plot(x, not_unemployed_means, label="Stayed employed", marker="o")
 
-    # Add some labels and title
     ax.set_ylabel("Mean Loneliness Level")
     ax.set_title("Loneliness Levels by Employment Status")
     ax.set_xticks(x)

@@ -51,7 +51,7 @@ def task_plot_results(depends_on, produces):
     },
 )
 @pytask.mark.produces(BLD / "python" / "figures" / "effect_size.png")
-def task_plot_results1(depends_on, produces):
+def task_plot_effect_size(depends_on, produces):
     """Plot the regression results by age (Python version)."""
     data = pd.read_csv(depends_on["data"])
     data = drop_na(data)
@@ -86,8 +86,8 @@ def task_plot_des_stats_1(depends_on, produces):
         "data": BLD / "python" / "data" / "data_clean.csv",
     },
 )
-@pytask.mark.produces(BLD / "python" / "figures" / "descriptive stats_2.png")
-def task_plot_results3(depends_on, produces):
+@pytask.mark.produces(BLD / "python" / "figures" / "descriptive_stats_2.png")
+def task_plot_des_stats_2(depends_on, produces):
     """Plot the regression results by age (Python version)."""
     data = pd.read_csv(depends_on["data"])
     fig = plot_loneliness_by_gender_and_employment(data)
@@ -100,7 +100,7 @@ def task_plot_results3(depends_on, produces):
     },
 )
 @pytask.mark.produces(BLD / "python" / "tables" / "estimation_table.tex")
-def task_plot_results4(depends_on, produces):
+def task_estimation_table(depends_on, produces):
     """Plot the regression results by age (Python version)."""
     data = pd.read_csv(depends_on["data"])
     data = drop_na(data)
@@ -124,8 +124,8 @@ def task_plot_results4(depends_on, produces):
         "data": BLD / "python" / "data" / "data_clean.csv",
     },
 )
-@pytask.mark.produces(BLD / "python" / "figures" / "descriptive stats_5.png")
-def task_plot_results5(depends_on, produces):
+@pytask.mark.produces(BLD / "python" / "figures" / "descriptive_stats_3.png")
+def task_plot_des_stats_3(depends_on, produces):
     """Plot the regression results by age (Python version)."""
     data = pd.read_csv(depends_on["data"])
     fig = plot_loneliness_by_marital_status_unemployment(data)
