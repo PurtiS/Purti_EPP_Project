@@ -5,6 +5,8 @@ import numpy as np
 import pandas as pd
 import statsmodels.api as sm
 
+# All the functions are tested on sample dataset test_match.csv
+
 
 def test_fit_regression_model():
     # Generate random data for testing

@@ -57,6 +57,7 @@ calculated to determine the impact of unemployment on loneliness.
 
 - Data Management folder with tests pertaining to data cleaning functions.
 - Analysis Folder with tests pertainign to the modeling and predictions functions.
+- Sample datasets have been created for testing the functions in both the folders.
 
 #### When pytest and pytask modules are used, we find the results in the BLD Folder under specific subsections.
 

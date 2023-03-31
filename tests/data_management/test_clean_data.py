@@ -5,6 +5,8 @@ import pytest
 import src.final_project.data_management.clean_data as cleaned_fn
 from src.final_project.config import TEST_DIR
 
+# All the functions are tested on sample dataset Test_fn.csv
+
 
 @pytest.fixture()
 def data():
