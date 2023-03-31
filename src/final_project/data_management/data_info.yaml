@@ -1,13 +1,21 @@
 ---
-data_name: data.csv
+data_name: pgen.dta, ppathl.dta, pl.dta, hgen.dta, hbrutto.dta
+Outcome Variable: Aggregate_loenliness_2017
+Treatment Variable: went_unemployed
 categorical_columns:
-  - sex
-  - marital_status
-  - health
-  - Company_missing
-  - Feeling_left_out
-  - socially_isolated
-  - pgemplst
-column_rename_mapping: null
-outcome: aggregate_loenliness_2017
-treatment: went_unemployed
+  - sex - sex
+  - pgfamstd - marital_status
+  - ple0008 - health
+  - plj0587 - Missing_company_of_others
+  - plj0588 - Feeling_left_out
+  - plj0589 - Socially_isloated
+  - pgemplst - Employment Status
+Numerical Variables:
+  - syear - Survey year
+  - hid - Household ID
+  - pid - Personal ID
+  - pgexpue - Experience of unemployement in years
+  - gebjahr - Year of birth
+  - pgbilzeit - Years of Education
+  - hgi1hinc - Imputed Household Income
+  - hhgr - Household Members

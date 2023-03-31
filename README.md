@@ -65,7 +65,8 @@ calculated to determine the impact of unemployment on loneliness.
 - In order to use the datasets from SOEP, one can visit
   https://www.diw.de/en/diw_01.c.601584.en/data_access.html. The datasets can be
   directly used for the data cleaning functions created in the project.
-- The environment.yml file contians all the dependencies. Missinf dependencies can be
+- Variables used are defined in data_info.yml file in the source folder.
+- The environment.yml file contians all the dependencies. Missing dependencies can be
   installed.
 
 To get started, create and activate the environment with
