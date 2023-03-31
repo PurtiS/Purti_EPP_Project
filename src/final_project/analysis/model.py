@@ -109,3 +109,242 @@ def load_model(path):
 
     """
     return load_pickle(path)
+
+
+def perform_subgroup_analysis_age(matched_data):
+    """Performs subgroup analysis on a matched dataset by age group.
+
+    Parameters:
+    - matched_data (pandas DataFrame): the matched dataset to perform subgroup analysis on
+
+    Returns:
+    - results_df (pandas DataFrame): a dataframe containing the treatment effect and p-value for the specified age group.
+
+    """
+    # Subset the data into age subgroups
+    age_subgroup1 = matched_data[matched_data["age"] < 50]
+    age_subgroup2 = matched_data[matched_data["age"] >= 50]
+
+    # Calculate treatment effect for each subgroup
+    subgroup1_effect = (
+        sm.OLS(
+            age_subgroup1["aggregate_loneliness_2017"],
+            age_subgroup1["went_unemployed"],
+        )
+        .fit()
+        .params[0]
+    )
+    subgroup2_effect = (
+        sm.OLS(
+            age_subgroup2["aggregate_loneliness_2017"],
+            age_subgroup2["went_unemployed"],
+        )
+        .fit()
+        .params[0]
+    )
+
+    subgroup1_pvalue = (
+        sm.OLS(
+            age_subgroup1["aggregate_loneliness_2017"],
+            age_subgroup1["went_unemployed"],
+        )
+        .fit()
+        .pvalues[0]
+    )
+    subgroup2_pvalue = (
+        sm.OLS(
+            age_subgroup2["aggregate_loneliness_2017"],
+            age_subgroup2["went_unemployed"],
+        )
+        .fit()
+        .pvalues[0]
+    )
+
+    # Store the results in a dataframe
+    results_df = pd.DataFrame(
+        {
+            "Subgroup": ["Age < 50", "Age >= 50"],
+            "Treatment Effect": [subgroup1_effect, subgroup2_effect],
+            "P-Value": [subgroup1_pvalue, subgroup2_pvalue],
+        },
+    )
+
+    return results_df
+
+
+def perform_subgroup_analysis_gender(matched_data):
+    """Performs subgroup analysis on a matched dataset by sex, 1 for males and 0 for females.
+
+    Parameters:
+    - matched_data (pandas DataFrame): the matched dataset to perform subgroup analysis on
+
+    Returns:
+    - results_df (pandas DataFrame): a dataframe containing the treatment effect and p-value for the specified sex.
+
+    """
+    male_subgroup = matched_data[matched_data["sex"] == 1]
+    female_subgroup = matched_data[matched_data["sex"] == 0]
+
+    male_effect = (
+        sm.OLS(
+            male_subgroup["aggregate_loneliness_2017"],
+            male_subgroup["went_unemployed"],
+        )
+        .fit()
+        .params[0]
+    )
+    female_effect = (
+        sm.OLS(
+            female_subgroup["aggregate_loneliness_2017"],
+            female_subgroup["went_unemployed"],
+        )
+        .fit()
+        .params[0]
+    )
+
+    male_pvalue = (
+        sm.OLS(
+            male_subgroup["aggregate_loneliness_2017"],
+            male_subgroup["went_unemployed"],
+        )
+        .fit()
+        .pvalues[0]
+    )
+    female_pvalue = (
+        sm.OLS(
+            female_subgroup["aggregate_loneliness_2017"],
+            female_subgroup["went_unemployed"],
+        )
+        .fit()
+        .pvalues[0]
+    )
+
+    results_df = pd.DataFrame(
+        {
+            "Subgroup": ["Male", "Female"],
+            "Treatment Effect": [male_effect, female_effect],
+            "P-Value": [male_pvalue, female_pvalue],
+        },
+    )
+
+    return results_df
+
+
+def perform_subgroup_analysis_marital_status(matched_data):
+    """Performs subgroup analysis on a matched dataset by marital status which is defined by marital status of 1 for people married and living together and 0 for all others.
+
+    Parameters:
+    - matched_data (pandas DataFrame): the matched dataset to perform subgroup analysis on
+
+    Returns:
+    - results_df (pandas DataFrame): a dataframe containing the treatment effect and p-value for the people who are married and living together and other.
+
+    """
+    married_subgroup = matched_data[matched_data["marital_status"] == 1]
+    other_subgroup = matched_data[matched_data["marital_status"] == 0]
+
+    married_effect = (
+        sm.OLS(
+            married_subgroup["aggregate_loneliness_2017"],
+            married_subgroup["went_unemployed"],
+        )
+        .fit()
+        .params[0]
+    )
+    other_effect = (
+        sm.OLS(
+            other_subgroup["aggregate_loneliness_2017"],
+            other_subgroup["went_unemployed"],
+        )
+        .fit()
+        .params[0]
+    )
+
+    married_pvalue = (
+        sm.OLS(
+            married_subgroup["aggregate_loneliness_2017"],
+            married_subgroup["went_unemployed"],
+        )
+        .fit()
+        .pvalues[0]
+    )
+    other_pvalue = (
+        sm.OLS(
+            other_subgroup["aggregate_loneliness_2017"],
+            other_subgroup["went_unemployed"],
+        )
+        .fit()
+        .pvalues[0]
+    )
+
+    results_df = pd.DataFrame(
+        {
+            "Subgroup": ["Married", "Other"],
+            "Treatment Effect": [married_effect, other_effect],
+            "P-Value": [married_pvalue, other_pvalue],
+        },
+    )
+
+    return results_df
+
+
+def perform_subgroup_analysis_health(matched_data):
+    """Performs subgroup analysis on a matched dataset by health. Average health is 3 and therefore the analysis is based on people above and below average health.
+
+    Parameters:
+    - matched_data (pandas DataFrame): the matched dataset to perform subgroup analysis on
+
+    Returns:
+    - results_df (pandas DataFrame): a dataframe containing the treatment effect and p-value for the health above and lower average.
+
+    """
+    # Subset the data into health subgroups
+    high_health_subgroup = matched_data[matched_data["health_2013"] > 3]
+    low_health_subgroup = matched_data[matched_data["health_2013"] <= 3]
+
+    # Calculate treatment effect for each subgroup
+    high_health_effect = (
+        sm.OLS(
+            high_health_subgroup["aggregate_loneliness_2017"],
+            high_health_subgroup["went_unemployed"],
+        )
+        .fit()
+        .params[0]
+    )
+    low_health_effect = (
+        sm.OLS(
+            low_health_subgroup["aggregate_loneliness_2017"],
+            low_health_subgroup["went_unemployed"],
+        )
+        .fit()
+        .params[0]
+    )
+
+    # Conduct statistical tests for each subgroup
+    high_health_pvalue = (
+        sm.OLS(
+            high_health_subgroup["aggregate_loneliness_2017"],
+            high_health_subgroup["went_unemployed"],
+        )
+        .fit()
+        .pvalues[0]
+    )
+    low_health_pvalue = (
+        sm.OLS(
+            low_health_subgroup["aggregate_loneliness_2017"],
+            low_health_subgroup["went_unemployed"],
+        )
+        .fit()
+        .pvalues[0]
+    )
+
+    # Store the results in a dataframe
+    results_df = pd.DataFrame(
+        {
+            "Subgroup": ["High Health", "Low Health"],
+            "Treatment Effect": [high_health_effect, low_health_effect],
+            "P-Value": [high_health_pvalue, low_health_pvalue],
+        },
+    )
+
+    return results_df

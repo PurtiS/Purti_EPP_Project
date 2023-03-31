@@ -8,6 +8,10 @@ from final_project.analysis.model import (
     drop_na,
     fit_regression_model,
     load_model,
+    perform_subgroup_analysis_age,
+    perform_subgroup_analysis_gender,
+    perform_subgroup_analysis_health,
+    perform_subgroup_analysis_marital_status,
     run_logistic_ps,
 )
 from final_project.analysis.predict import (
@@ -68,4 +72,56 @@ def task_predict_python(depends_on, produces):
     data = pd.read_csv(depends_on["data"])
     model = load_model(depends_on["model"])
     predicted = predict_att_ate_regression(data, model)
+    predicted.to_csv(produces, index=False)
+
+
+@pytask.mark.depends_on(
+    {
+        "data": BLD / "python" / "predictions" / "data_matched.csv",
+    },
+)
+@pytask.mark.produces(BLD / "python" / "predictions" / "subgroup_age.csv")
+def task_subgroup_analysis(depends_on, produces):
+    """Subgroup Analysis for age."""
+    data = pd.read_csv(depends_on["data"])
+    predicted = perform_subgroup_analysis_age(data)
+    predicted.to_csv(produces, index=False)
+
+
+@pytask.mark.depends_on(
+    {
+        "data": BLD / "python" / "predictions" / "data_matched.csv",
+    },
+)
+@pytask.mark.produces(BLD / "python" / "predictions" / "subgroup_gender.csv")
+def task_subgroup_analysis_gender(depends_on, produces):
+    """Subgroup Analysis based on sex."""
+    data = pd.read_csv(depends_on["data"])
+    predicted = perform_subgroup_analysis_gender(data)
+    predicted.to_csv(produces, index=False)
+
+
+@pytask.mark.depends_on(
+    {
+        "data": BLD / "python" / "predictions" / "data_matched.csv",
+    },
+)
+@pytask.mark.produces(BLD / "python" / "predictions" / "subgroup_marital_status.csv")
+def task_subgroup_analysis_marital_status(depends_on, produces):
+    """Subgroup Analysis based on marital status."""
+    data = pd.read_csv(depends_on["data"])
+    predicted = perform_subgroup_analysis_marital_status(data)
+    predicted.to_csv(produces, index=False)
+
+
+@pytask.mark.depends_on(
+    {
+        "data": BLD / "python" / "predictions" / "data_matched.csv",
+    },
+)
+@pytask.mark.produces(BLD / "python" / "predictions" / "subgroup_health.csv")
+def task_subgroup_analysis_health(depends_on, produces):
+    """Subgroup Analysis based on health."""
+    data = pd.read_csv(depends_on["data"])
+    predicted = perform_subgroup_analysis_health(data)
     predicted.to_csv(produces, index=False)
