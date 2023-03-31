@@ -11,6 +11,7 @@ from final_project.final.plot import (
     plot_effect_size,
     plot_loneliness_by_employment,
     plot_loneliness_by_gender_and_employment,
+    plot_loneliness_by_marital_status_unemployment,
     plot_match,
 )
 
@@ -116,3 +117,16 @@ def task_plot_results4(depends_on, produces):
     table = effect_size_table(psm)
     with open(produces, "w") as f:
         f.write(table.to_latex(index=False))
+
+
+@pytask.mark.depends_on(
+    {
+        "data": BLD / "python" / "data" / "data_clean.csv",
+    },
+)
+@pytask.mark.produces(BLD / "python" / "figures" / "descriptive stats_5.png")
+def task_plot_results5(depends_on, produces):
+    """Plot the regression results by age (Python version)."""
+    data = pd.read_csv(depends_on["data"])
+    fig = plot_loneliness_by_marital_status_unemployment(data)
+    fig.savefig(produces)
