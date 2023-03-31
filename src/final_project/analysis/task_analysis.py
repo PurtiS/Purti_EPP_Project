@@ -26,7 +26,7 @@ from final_project.config import BLD
     },
 )
 @pytask.mark.produces(BLD / "python" / "predictions" / "data_matched.csv")
-def task_fit_model_python(depends_on, produces):
+def task_create_matched_data(depends_on, produces):
     """Fit a logistic regression model (Python version)."""
     data = pd.read_csv(depends_on["data"])
     data = drop_na(data)
